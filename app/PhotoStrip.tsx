@@ -19,7 +19,9 @@ export default function PhotoStrip({ frameCount = 3 }) {
             {Array.from({ length: frameCount }).map((_, i) => (
               <View key={i} style={styles.fourPhotoFrame} />
             ))}
+            <View style={{ width: '100%', alignItems: 'center' }}>
             <Text style={styles.footerText}>{new Date().toDateString()}</Text>
+            </View>
           </View>
         </>
       )}
@@ -28,21 +30,21 @@ export default function PhotoStrip({ frameCount = 3 }) {
 }
 const styles = StyleSheet.create({
   strip: {
-    width: 160, // 너비 (원하는 크기 조정)
+    width: 150, // 너비 (원하는 크기 조정)
     backgroundColor: "#000",
     padding: 12,
     borderRadius: 4,
     alignItems: "center",
   },
 fourStrip: {
-  flex:1,
-    width: 220,
+    width: 200,
     backgroundColor: '#000',
     padding: 12,
     borderRadius: 4,
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
+    alignItems: "center",
   },
   photoFrame: {
     width: "100%",
@@ -52,7 +54,8 @@ fourStrip: {
   },
   fourPhotoFrame: {
     width: '48%', // 2개 들어가도록
-    aspectRatio: 1.2,
+    height: '100%',
+    aspectRatio: 0.6,
     backgroundColor: '#fff',
     marginBottom: 10,
   },
