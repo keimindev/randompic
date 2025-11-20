@@ -1,10 +1,10 @@
-import { Text, View } from "react-native";
+import { View } from "react-native";
+import FramePage from "./FramePage";
 
 export default function HomeScreen() {
   return (
-    <View>
-      <Text style={{ color: 'black' }}>Home Screen</Text>
-      <Text style={{ color: 'black' }}>Home Screen</Text>
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <FramePage />
     </View>
   );
 }
