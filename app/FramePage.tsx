@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import PhotoStrip from "./PhotoStrip";
 
 const FramePage = () => {
   const [count, setCount] = useState(0);
   const onPress = () => setCount((prevCount) => prevCount + 1);
 
-  
   return (
     <SafeAreaView>
       <View style={{ flex: 1, justifyContent: "center" }}>
@@ -14,20 +14,19 @@ const FramePage = () => {
           <Text style={styles.question}>Step 2</Text>
         </View>
         <View style={styles.container}>
-          <TouchableOpacity style={styles.randombox} onPress={onPress}>
-            <Text style={styles.text}>3 frames</Text>
+          <TouchableOpacity onPress={onPress}>
+            <PhotoStrip />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.randombox} onPress={onPress}>
-            <Text style={styles.text}>4 frames</Text>
+          <TouchableOpacity  onPress={onPress}>
+            <PhotoStrip frameCount={4} />
           </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>
-  )
-}
+  );
+};
 
-export default FramePage
-
+export default FramePage;
 
 const styles = StyleSheet.create({
   question: {
@@ -43,18 +42,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 20,
-  },
-  randombox: {
-    width: 150,
-    height: 150,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#DDDDDD",
-  },
-  text: {
-    fontSize: 20,
-    textAlign: "center",
-    margin: 10,
-    color: "blue",
   },
 });
