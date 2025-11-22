@@ -1,7 +1,7 @@
-import { Camera } from "expo-camera";
+import { Camera, CameraView } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import React, { useEffect, useState } from "react";
-import { Text } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CameraPage() {
@@ -20,8 +20,15 @@ export default function CameraPage() {
       {!isPermittedCamera ? (
         <Text>카메라 권한이 없습니다.</Text>
       ) : (
-        <Text>카메라 권한이 있습니다.</Text>
+        <CameraView style={{ flex: 1 }} />
       )}
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  camera: {
+    width: "100%",
+    height: "100%",
+  },
+});
