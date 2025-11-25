@@ -1,14 +1,17 @@
 import { AntDesign } from "@expo/vector-icons";
-import { CameraType, CameraView, useCameraPermissions } from "expo-camera";
+import { CameraView, useCameraPermissions } from "expo-camera";
 import { useRef, useState } from "react";
 import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import PhotoPreviewSection from "../components/PhotoPreviewSection";
 
 export default function CameraPage() {
-  const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
   const [photo, setPhoto] = useState<any>(null);
+  const [countdown, setCountdown] = useState(0);
   const cameraRef = useRef<CameraView | null>(null);
+
+  const mode = "threecut"; // threecut | fourcut
+  const aspect = mode === "threecut" ? 4 / 3 : 3 / 4;
 
   if (!permission) {
     // Camera permissions are still loading.
@@ -27,11 +30,23 @@ export default function CameraPage() {
     );
   }
 
-  function toggleCameraFacing() {
-    setFacing((current) => (current === "back" ? "front" : "back"));
-  }
-
   const handleTakePhoto = async () => {
+    setCountdown(10); // 카운트다운 시작
+
+    let time = 10;
+
+    const timer = setInterval(() => {
+      time -= 1;
+      setCountdown(time);
+
+      if (time === 0) {
+        clearInterval(timer);
+        takePhoto();
+      }
+    }, 1000);
+  };
+
+  const takePhoto = async () => {
     if (cameraRef.current) {
       const options = {
         quality: 1,
@@ -57,20 +72,22 @@ export default function CameraPage() {
   return (
     <View style={styles.container}>
       <CameraView
-        style={styles.camera}
-        facing={facing}
+        style={[styles.camera, { aspectRatio: aspect }]}
+        facing={"front"}
         mirror={true}
         ref={cameraRef}
       >
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-            <AntDesign name="retweet" size={44} color="black" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={handleTakePhoto}>
-            <AntDesign name="camera" size={44} color="black" />
-          </TouchableOpacity>
-        </View>
+        {countdown > 0 && (
+          <View style={styles.countdownContainer}>
+            <Text style={styles.countdownText}>{countdown}</Text>
+          </View>
+        )}
       </CameraView>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.button} onPress={handleTakePhoto}>
+          <AntDesign name="camera" size={44} color="black" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -82,26 +99,38 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   camera: {
-    width: "100%",
-    height: "80%",
+    aspectRatio: 3 / 4,
   },
   buttonContainer: {
-    flex: 1,
-    flexDirection: "row",
+    marginTop: 20,
+    alignItems: "center",
     backgroundColor: "transparent",
-    margin: 64,
   },
   button: {
-    flex: 1,
-    alignSelf: "flex-end",
+    width: 70,
+    height: 70,
+    justifyContent: "center",
     alignItems: "center",
-    marginHorizontal: 10,
+    alignSelf: "center",
     backgroundColor: "gray",
-    borderRadius: 10,
+    borderRadius: 50,
   },
   text: {
     fontSize: 24,
     fontWeight: "bold",
     color: "white",
+  },
+  countdownContainer: {
+    position: "absolute",
+    top: "40%",
+    alignSelf: "center",
+  },
+  countdownText: {
+    fontSize: 80,
+    fontWeight: "bold",
+    color: "white",
+    textShadowColor: "black",
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 10,
   },
 });
