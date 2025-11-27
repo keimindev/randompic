@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { router } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const RandomPage = () => {
-  const [count, setCount] = useState(0);
-  const onPress = () => setCount((prevCount) => prevCount + 1);
+  const handlePressButton = (value: string) => {
+    router.push(`/FramePage?filter=${value}`);
+  };
 
   return (
     <SafeAreaView>
@@ -13,10 +14,16 @@ const RandomPage = () => {
           <Text style={styles.question}>Step 1</Text>
         </View>
         <View style={styles.container}>
-          <TouchableOpacity style={styles.randombox} onPress={onPress}>
+          <TouchableOpacity
+            style={styles.randombox}
+            onPress={() => handlePressButton("random")}
+          >
             <Text style={styles.text}>Random</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.randombox} onPress={onPress}>
+          <TouchableOpacity
+            style={styles.randombox}
+            onPress={() => handlePressButton("original")}
+          >
             <Text style={styles.text}>Be Yourself</Text>
           </TouchableOpacity>
         </View>

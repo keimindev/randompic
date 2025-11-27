@@ -31,6 +31,7 @@ export default function PhotoStrip({ frameCount = 3 }) {
 const styles = StyleSheet.create({
   strip: {
     width: 150, // 너비 (원하는 크기 조정)
+    height: 400, // 높이 (원하는 크기 조정)
     backgroundColor: "#000",
     padding: 12,
     borderRadius: 4,
@@ -38,6 +39,7 @@ const styles = StyleSheet.create({
   },
 fourStrip: {
     width: 200,
+    height: 400, // 높이 (원하는 크기 조정)
     backgroundColor: '#000',
     padding: 12,
     borderRadius: 4,
@@ -59,7 +61,6 @@ fourStrip: {
     backgroundColor: '#fff',
     marginBottom: 10,
   },
-
   footerText: {
     color: "#E8BE7B",
     marginTop: 4,
