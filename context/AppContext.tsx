@@ -1,16 +1,22 @@
-import { createContext, Dispatch, ReactNode, useContext, useReducer } from 'react';
+import {
+  createContext,
+  Dispatch,
+  ReactNode,
+  useContext,
+  useReducer,
+} from "react";
 
 export type AppState = {
-  cutCount: number;    
-  filter: string | null; 
-  mode: "normal" | "randomPick";
-  photos: string[];     
+  cutCount: number;
+  filter: string | null;
+  mode: "normal" | "random";
+  photos: string[];
 };
 
 export type AppAction =
   | { type: "SET_CUT_COUNT"; payload: number }
   | { type: "SET_FILTER"; payload: string | null }
-  | { type: "SET_MODE"; payload: "normal" | "randomPick" }
+  | { type: "SET_MODE"; payload: "normal" | "random" }
   | { type: "SET_PHOTOS"; payload: string[] }
   | { type: "RESET" };
 
@@ -33,7 +39,7 @@ function appReducer(state: AppState, action: AppAction): AppState {
       return { ...state, mode: action.payload };
 
     case "SET_PHOTOS":
-      return { ...state, photos: action.payload };
+      return { ...state, photos: [...state.photos, ...action.payload] };
 
     case "RESET":
       return initialState;
@@ -48,12 +54,10 @@ type AppContextType = {
   dispatch: Dispatch<AppAction>;
 };
 
-
 const AppContext = createContext<AppContextType | null>(null);
 
-
 type AppProviderProps = {
-  children: ReactNode;   
+  children: ReactNode;
 };
 
 export function AppProvider({ children }: AppProviderProps) {
@@ -65,7 +69,6 @@ export function AppProvider({ children }: AppProviderProps) {
     </AppContext.Provider>
   );
 }
-
 
 export function useAppContext(): AppContextType {
   const context = useContext(AppContext);

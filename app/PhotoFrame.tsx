@@ -1,9 +1,11 @@
+import { useAppContext } from "@/context/AppContext";
 import Feather from "@expo/vector-icons/Feather";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const PhotoFrame = () => {
+  const { state, dispatch } = useAppContext();
   const handleSaveBtn = () => {
     // Save button logic here
   };
@@ -14,16 +16,17 @@ const PhotoFrame = () => {
 
   const handleHomeBtn = () => {
     // Home button logic here
-  }
+  };
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <View style={styles.strip}>
-        {Array.from({ length: 3 }).map((_, i) => (
+        {state.photos.map((photo, i) => (
           <View key={i} style={styles.photoFrame}>
             <Image
+              key={i}
               style={styles.photo}
               source={{
-                uri: "https://i.namu.wiki/i/y9f5vOHoe4KtAVYfK4ghPWTi8umyFCDyyzFOqnJmOk1tiOwQfxMMKzKto1kO-KHcB3vfCR-PbmHVWCp_hzC75Q.webp",
+                uri: photo,
               }}
             />
           </View>
@@ -72,7 +75,8 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
     marginTop: 50,
+    gap: 40
   },
 });

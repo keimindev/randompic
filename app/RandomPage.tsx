@@ -1,9 +1,13 @@
+import { useAppContext } from "@/context/AppContext";
 import { router } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const RandomPage = () => {
-  const handlePressButton = (value: string) => {
+  const { dispatch } = useAppContext();
+  
+  const handlePressButton = (value: "normal" | "random") => {
+    dispatch({ type: "SET_MODE", payload: value })
     router.push(`/FramePage?filter=${value}`);
   };
 
@@ -22,7 +26,7 @@ const RandomPage = () => {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.randombox}
-            onPress={() => handlePressButton("original")}
+            onPress={() => handlePressButton("normal")}
           >
             <Text style={styles.text}>Be Yourself</Text>
           </TouchableOpacity>

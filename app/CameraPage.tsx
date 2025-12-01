@@ -1,20 +1,24 @@
+import { useAppContext } from "@/context/AppContext";
 import { AntDesign } from "@expo/vector-icons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { CameraView, useCameraPermissions } from "expo-camera";
+import { router } from "expo-router";
 import { useRef, useState } from "react";
 import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import PhotoPreviewSection from "../components/PhotoPreviewSection";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CameraPage() {
+  const { state, dispatch } = useAppContext();
   const [permission, requestPermission] = useCameraPermissions();
   const [photo, setPhoto] = useState<any>(null);
   const [countdown, setCountdown] = useState(0);
   const cameraRef = useRef<CameraView | null>(null);
 
-  const mode = "threecut"; // threecut | fourcut
-  const aspect = mode === "threecut" ? 4 / 3 : 3 / 4;
+  console.log("Photo taken:", state.photos);
+  const mode = state.cutCount;
+  const aspect = mode === 3 ? 4 / 3 : 3 / 4;
 
   if (!permission) {
-    // Camera permissions are still loading.
     return <View />;
   }
 
@@ -31,9 +35,9 @@ export default function CameraPage() {
   }
 
   const handleTakePhoto = async () => {
-    setCountdown(10); // 카운트다운 시작
+    setCountdown(3); // 카운트다운 시작
 
-    let time = 10;
+    let time = 3;
 
     const timer = setInterval(() => {
       time -= 1;
@@ -56,46 +60,56 @@ export default function CameraPage() {
       const takedPhoto = await cameraRef.current.takePictureAsync(options);
 
       setPhoto(takedPhoto);
+      dispatch({ type: "SET_PHOTOS", payload: [takedPhoto.uri] }); // 사진 URI를 컨텍스트에 저장
     }
   };
 
-  const handleRetakePhoto = () => setPhoto(null);
+  const handlePressReturnBtn = () => {
+    router.back();
+  };
 
-  if (photo)
-    return (
-      <PhotoPreviewSection
-        photo={photo}
-        handleRetakePhoto={handleRetakePhoto}
-      />
-    );
+  if (state.photos.length === 3) {
+    console.log("📸 6장 촬영 완료! 자동 저장 진행중...");
+    router.push("/PhotoFrame")
+  }
 
   return (
-    <View style={styles.container}>
-      <CameraView
-        style={[styles.camera, { aspectRatio: aspect }]}
-        facing={"front"}
-        mirror={true}
-        ref={cameraRef}
-      >
-        {countdown > 0 && (
-          <View style={styles.countdownContainer}>
-            <Text style={styles.countdownText}>{countdown}</Text>
-          </View>
-        )}
-      </CameraView>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleTakePhoto}>
-          <AntDesign name="camera" size={44} color="black" />
+    <SafeAreaView style={{ flex: 1, justifyContent: "center" }}>
+      <View style={{ paddingTop: 5, paddingLeft: 20 }}>
+        <TouchableOpacity onPress={handlePressReturnBtn}>
+          <Ionicons name="return-up-back" size={32} color="black" />
         </TouchableOpacity>
       </View>
-    </View>
+      <View style={styles.container}>
+        <Text style={{ marginTop: 20, fontSize: 18 }}>
+          현재 촬영된 사진 수: {state.photos.length} / 6
+        </Text>
+        <CameraView
+          style={[styles.camera, { aspectRatio: aspect }]}
+          facing={"front"}
+          mirror={true}
+          ref={cameraRef}
+        >
+          {countdown > 0 && (
+            <View style={styles.countdownContainer}>
+              <Text style={styles.countdownText}>{countdown}</Text>
+            </View>
+          )}
+        </CameraView>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleTakePhoto}>
+            <AntDesign name="camera" size={44} color="black" />
+          </TouchableOpacity>
+        </View>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    height: "100%",
+    height: "95%",
     justifyContent: "center",
   },
   camera: {

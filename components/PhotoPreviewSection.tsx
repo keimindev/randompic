@@ -6,10 +6,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const PhotoPreviewSection = ({
   photo,
-  handleRetakePhoto,
 }: {
   photo: CameraCapturedPicture;
-  handleRetakePhoto: () => void;
 }) => (
   <SafeAreaView style={styles.container}>
     <View style={styles.box}>
@@ -21,7 +19,7 @@ const PhotoPreviewSection = ({
     </View>
 
     <View style={styles.buttonContainer}>
-      <TouchableOpacity style={styles.button} onPress={handleRetakePhoto}>
+      <TouchableOpacity style={styles.button} onPress={() =>{}}>
         <Fontisto name="trash" size={36} color="black" />
       </TouchableOpacity>
     </View>
