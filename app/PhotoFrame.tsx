@@ -1,13 +1,38 @@
 import { useAppContext } from "@/context/AppContext";
 import Feather from "@expo/vector-icons/Feather";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import * as MediaLibrary from "expo-media-library";
+import { router } from "expo-router";
+import { useRef } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import ViewShot, { captureRef } from "react-native-view-shot";
 
 const PhotoFrame = () => {
   const { state, dispatch } = useAppContext();
-  const handleSaveBtn = () => {
-    // Save button logic here
+  const viewShotRef = useRef<ViewShot>(null);
+
+  const handleSaveBtn = async () => {
+    try {
+    const { status } = await MediaLibrary.requestPermissionsAsync(true);
+
+    if (status !== "granted") {
+      alert("갤러리 접근 권한이 필요합니다.");
+      return;
+    }
+      const uri = await captureRef(viewShotRef, {
+        format: "jpg",
+        quality: 0.9,
+        width: 720,
+      });
+
+      if (!uri) return;
+
+      await MediaLibrary.saveToLibraryAsync(uri);
+      alert("사진이 앨범에 저장되었습니다!");
+    } catch (err) {
+      console.log("Save Error:", err);
+    }
   };
 
   const handleShareBtn = () => {
@@ -15,24 +40,29 @@ const PhotoFrame = () => {
   };
 
   const handleHomeBtn = () => {
-    // Home button logic here
+    router.push("/");
   };
+
   return (
-    <SafeAreaView style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <View style={styles.strip}>
-        {state.photos.map((photo, i) => (
-          <View key={i} style={styles.photoFrame}>
-            <Image
-              key={i}
-              style={styles.photo}
-              source={{
-                uri: photo,
-              }}
-            />
-          </View>
-        ))}
-        <Text style={styles.footerText}>{new Date().toDateString()}</Text>
-      </View>
+    <SafeAreaView
+      style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+    >
+      <ViewShot ref={viewShotRef} options={{ format: "jpg", quality: 0.9 }}>
+        <View style={styles.strip}>
+          {state.photos.map((photo, i) => (
+            <View key={i} style={styles.photoFrame}>
+              <Image
+                key={i}
+                style={styles.photo}
+                source={{
+                  uri: photo,
+                }}
+              />
+            </View>
+          ))}
+          <Text style={styles.footerText}>{new Date().toDateString()}</Text>
+        </View>
+      </ViewShot>
       <View style={styles.buttonContainer}>
         <TouchableOpacity onPress={handleSaveBtn}>
           <Feather name="save" size={35} color="black" />
@@ -77,6 +107,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 50,
-    gap: 40
+    gap: 40,
   },
 });

@@ -8,7 +8,7 @@ const RandomPage = () => {
   
   const handlePressButton = (value: "normal" | "random") => {
     dispatch({ type: "SET_MODE", payload: value })
-    router.push(`/FramePage?filter=${value}`);
+    router.push(`/FramePage`);
   };
 
   return (
