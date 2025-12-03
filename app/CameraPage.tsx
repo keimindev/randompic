@@ -68,7 +68,7 @@ export default function CameraPage() {
     router.back();
   };
 
-  if (state.photos.length === 3) {
+  if (state.photos.length === 4) {
     console.log("📸 6장 촬영 완료! 자동 저장 진행중...");
     router.push("/PhotoFrame")
   }

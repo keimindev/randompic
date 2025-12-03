@@ -4,9 +4,10 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import * as MediaLibrary from "expo-media-library";
 import { router } from "expo-router";
 import { useRef } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ViewShot, { captureRef } from "react-native-view-shot";
+import PhotoStrip from "./PhotoStrip";
 
 const PhotoFrame = () => {
   const { state, dispatch } = useAppContext();
@@ -14,16 +15,16 @@ const PhotoFrame = () => {
 
   const handleSaveBtn = async () => {
     try {
-    const { status } = await MediaLibrary.requestPermissionsAsync(true);
+      const { status } = await MediaLibrary.requestPermissionsAsync(true);
 
-    if (status !== "granted") {
-      alert("갤러리 접근 권한이 필요합니다.");
-      return;
-    }
+      if (status !== "granted") {
+        alert("갤러리 접근 권한이 필요합니다.");
+        return;
+      }
       const uri = await captureRef(viewShotRef, {
         format: "jpg",
-        quality: 0.9,
         width: 720,
+        quality: 0.85,
       });
 
       if (!uri) return;
@@ -40,6 +41,7 @@ const PhotoFrame = () => {
   };
 
   const handleHomeBtn = () => {
+    dispatch({ type: "RESET" });
     router.push("/");
   };
 
@@ -48,19 +50,8 @@ const PhotoFrame = () => {
       style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
     >
       <ViewShot ref={viewShotRef} options={{ format: "jpg", quality: 0.9 }}>
-        <View style={styles.strip}>
-          {state.photos.map((photo, i) => (
-            <View key={i} style={styles.photoFrame}>
-              <Image
-                key={i}
-                style={styles.photo}
-                source={{
-                  uri: photo,
-                }}
-              />
-            </View>
-          ))}
-          <Text style={styles.footerText}>{new Date().toDateString()}</Text>
+        <View style={{ alignItems: "center" }}>
+          <PhotoStrip frameCount={state.cutCount} />
         </View>
       </ViewShot>
       <View style={styles.buttonContainer}>
@@ -85,6 +76,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     padding: 20,
     borderRadius: 4,
+    alignItems: "center",
+  },
+  fourStrip: {
+    width: 200,
+    backgroundColor: "#000",
+    padding: 20,
+    borderRadius: 4,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
     alignItems: "center",
   },
   photo: {
