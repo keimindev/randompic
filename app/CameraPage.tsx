@@ -3,7 +3,7 @@ import { AntDesign } from "@expo/vector-icons";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { router } from "expo-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -14,9 +14,15 @@ export default function CameraPage() {
   const [countdown, setCountdown] = useState(0);
   const cameraRef = useRef<CameraView | null>(null);
 
-  console.log("Photo taken:", state.photos);
   const mode = state.cutCount;
   const aspect = mode === 3 ? 4 / 3 : 3 / 4;
+
+
+  useEffect(() => {
+    if (state.photos.length === 4) {
+      router.push("/PhotoFrame");
+    }
+  }, [state.photos.length]);
 
   if (!permission) {
     return <View />;
@@ -67,11 +73,6 @@ export default function CameraPage() {
   const handlePressReturnBtn = () => {
     router.back();
   };
-
-  if (state.photos.length === 4) {
-    console.log("📸 6장 촬영 완료! 자동 저장 진행중...");
-    router.push("/PhotoFrame")
-  }
 
   return (
     <SafeAreaView style={{ flex: 1, justifyContent: "center" }}>

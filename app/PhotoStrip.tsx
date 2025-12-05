@@ -3,10 +3,10 @@ import { Image, StyleSheet, Text, View } from "react-native";
 
 export default function PhotoStrip({ frameCount = 3 }) {
   const { state } = useAppContext();
-
+  console.log(frameCount, "촬영된 사진 수:", state.photos.length);
   return (
     <>
-      {state.cutCount === 3 ? (
+      {frameCount === 3 ? (
         state.photos.length === 0 ? (
           <View style={styles.strip}>
             {Array.from({ length: frameCount }).map((_, i) => (
